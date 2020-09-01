@@ -1,0 +1,33 @@
+server:
+  port: ${PORT:9002}
+
+spring:
+  application:
+    name: item-service
+
+  cloud:
+    loadbalancer:
+      ribbon: 
+        enabled: false
+   
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 2
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+    healthcheck:
+      enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    
+feign:
+  hystrix:
+    enabled: false
+  client:
+    config:
+      default:
+        connectTimeout: 600000 #10 mins
+        readTimeout: 600000 #10 mins
