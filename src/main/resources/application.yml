@@ -48,3 +48,7 @@ feign:
       default:
         connectTimeout: 600000 #10 mins
         readTimeout: 600000 #10 mins
+
+security:
+  jwt:
+    secret: 12345

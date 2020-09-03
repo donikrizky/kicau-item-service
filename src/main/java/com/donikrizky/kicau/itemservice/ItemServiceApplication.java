@@ -8,6 +8,9 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
+
+import com.donikrizky.kicau.itemservice.config.JwtConfig;
 
 @EnableEurekaClient
 @EnableFeignClients
@@ -22,4 +25,8 @@ public class ItemServiceApplication {
 		SpringApplication.run(ItemServiceApplication.class, args);
 	}
 
+	@Bean
+	public JwtConfig jwtConfig() {
+		return new JwtConfig();
+	}
 }

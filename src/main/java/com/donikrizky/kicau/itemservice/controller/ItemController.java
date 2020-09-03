@@ -23,6 +23,7 @@ import com.donikrizky.kicau.itemservice.dto.response.ItemResponseDTO;
 import com.donikrizky.kicau.itemservice.service.ItemService;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -38,7 +39,7 @@ public class ItemController extends CommonResource {
 	private ItemService itemService;
 
 	@ApiOperation(value = "Hello", response = ResponseEntity.class)
-//    @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer <access_token>")
+	@ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer <access_token>")
 	@GetMapping("/hello")
 	public String index(HttpServletRequest request) {
 		return "Hello from Item Service running at port: " + env.getProperty("local.server.port");
