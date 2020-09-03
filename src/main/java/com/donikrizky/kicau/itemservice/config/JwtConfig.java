@@ -1,6 +1,5 @@
 package com.donikrizky.kicau.itemservice.config;
 
-
 import org.springframework.beans.factory.annotation.Value;
 
 import lombok.Getter;
