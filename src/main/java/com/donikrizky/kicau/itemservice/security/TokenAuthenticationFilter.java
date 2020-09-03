@@ -40,7 +40,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 		String token = header.replace(jwtConfig.getPrefix(), "");
 
 		try {
-			Long userId = tokenProvider.getUserIdFromToken(token);
+			Integer userId = tokenProvider.getUserIdFromToken(token);
 
 			Date logoutTime = tokenProvider.getLogoutTimeFromToken(token);
 			if (tokenProvider.validateToken(token, logoutTime)) {

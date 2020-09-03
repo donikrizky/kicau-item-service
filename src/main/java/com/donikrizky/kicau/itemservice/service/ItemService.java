@@ -11,10 +11,10 @@ public interface ItemService {
 
 	public void reply(Integer userId, ItemPostRequestDTO requestDTO);
 
-	public List<ItemResponseDTO> findByUserId(List<Integer> userId, Integer pageNumber, Integer pageSize, String sortBy,
-			String direction);
+	public List<ItemResponseDTO> findByUserId(String header, List<Integer> userId, String username, Integer pageNumber,
+			Integer pageSize, String sortBy, String direction);
 
-	public List<ItemResponseDTO> findFollowedItem(Integer userId, Integer pageNumber, Integer pageSize, String sortBy,
-			String direction);
+	public List<ItemResponseDTO> findFollowedItem(String header, Integer userId, Integer pageNumber, Integer pageSize,
+			String sortBy, String direction);
 
 }

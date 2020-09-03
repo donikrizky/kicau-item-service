@@ -6,15 +6,11 @@ import org.springframework.data.domain.AuditorAware;
 
 public class AuditorAwareImpl implements AuditorAware<String> {
 
-    @Override
-    public Optional<String> getCurrentAuditor() {
-        String currentEmail = "system";
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-//            currentEmail = ((UserPrincipal) authentication.getPrincipal()).getName();
-//        }
+	@Override
+	public Optional<String> getCurrentAuditor() {
+		String username = "system";
 
-        return Optional.of(currentEmail);
-    }
+		return Optional.of(username);
+	}
 
 }

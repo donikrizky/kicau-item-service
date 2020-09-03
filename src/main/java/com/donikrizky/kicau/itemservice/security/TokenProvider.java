@@ -23,9 +23,9 @@ public class TokenProvider {
 	@Autowired
 	private JwtConfig jwtConfig;
 
-	public Long getUserIdFromToken(String token) {
+	public Integer getUserIdFromToken(String token) {
 		Claims claims = Jwts.parser().setSigningKey(jwtConfig.getSecret()).parseClaimsJws(token).getBody();
-		return Long.parseLong(claims.getSubject());
+		return Integer.parseInt(claims.getSubject());
 	}
 
 	public Date getLogoutTimeFromToken(String token) {
@@ -34,6 +34,12 @@ public class TokenProvider {
 		return claims.get("LogoutTime", Date.class);
 	}
 
+	public String getUsernameFromToken(String token) {
+		Claims claims = Jwts.parser().setSigningKey(jwtConfig.getSecret()).parseClaimsJws(token).getBody();
+
+		return claims.get("LogoutTime", String.class);
+	}
+	
 	public boolean validateToken(String authToken, Date logoutTime) throws SignatureException {
 		try {
 			Claims claims = Jwts.parser().setSigningKey(jwtConfig.getSecret()).parseClaimsJws(authToken).getBody();
