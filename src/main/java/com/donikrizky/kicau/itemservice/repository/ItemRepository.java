@@ -1,5 +1,7 @@
 package com.donikrizky.kicau.itemservice.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +16,6 @@ import com.donikrizky.kicau.itemservice.entity.Item;
 public interface ItemRepository extends JpaRepository<Item, Integer> {
 
 	@Query("SELECT new com.donikrizky.kicau.itemservice.dto.response.ItemResponseDTO "
-			+ "(i.comment, i.parentItemId) from Item i WHERE i.userId = :userId AND deleted = false")
-	public Page<ItemResponseDTO> findItemByUserId(@Param("userId") Integer userId, Pageable paging);
+			+ "(i.comment, i.parentItemId) FROM Item i WHERE i.userId IN :userId AND deleted = false")
+	public Page<ItemResponseDTO> findItemByUserId(@Param("userId") List<Integer> userId, Pageable paging);
 }

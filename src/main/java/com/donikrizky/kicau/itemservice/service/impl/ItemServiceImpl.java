@@ -1,5 +1,6 @@
 package com.donikrizky.kicau.itemservice.service.impl;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import com.donikrizky.kicau.itemservice.dto.request.ItemPostRequestDTO;
 import com.donikrizky.kicau.itemservice.dto.response.ItemResponseDTO;
 import com.donikrizky.kicau.itemservice.entity.Item;
 import com.donikrizky.kicau.itemservice.exception.BadRequestException;
+import com.donikrizky.kicau.itemservice.feign.UserFeignClient;
 import com.donikrizky.kicau.itemservice.repository.ItemRepository;
 import com.donikrizky.kicau.itemservice.service.ItemService;
 
@@ -20,10 +22,12 @@ import com.donikrizky.kicau.itemservice.service.ItemService;
 public class ItemServiceImpl implements ItemService {
 
 	private ItemRepository itemRepository;
+	private UserFeignClient userFeignClient;
 
 	@Autowired
-	ItemServiceImpl(ItemRepository itemRepository) {
+	ItemServiceImpl(ItemRepository itemRepository, UserFeignClient userFeignClient) {
 		this.itemRepository = itemRepository;
+		this.userFeignClient = userFeignClient;
 	}
 
 	private static final String ERROR_SORT_DIRECTION = "Error: Can only input ASC or DESC for direction!";
@@ -46,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public Page<ItemResponseDTO> findByUserId(Integer userId, Integer pageNumber, Integer pageSize, String sortBy,
+	public Page<ItemResponseDTO> findByUserId(List<Integer> userId, Integer pageNumber, Integer pageSize, String sortBy,
 			String direction) {
 		if (!sortByCreatedDate.test(sortBy)) {
 			throw new BadRequestException(ERROR_SORTBY);
@@ -66,4 +70,12 @@ public class ItemServiceImpl implements ItemService {
 		return itemRepository.findItemByUserId(userId, paging);
 	}
 
+	@Override
+	public Page<ItemResponseDTO> findFollowedItem(Integer userId, Integer pageNumber, Integer pageSize, String sortBy,
+			String direction) {
+		List<Integer> followedId = userFeignClient.findFollowed(userId)
+				.orElseThrow(() -> new BadRequestException("Error: You haven't followed anyone"));
+		
+		return this.findByUserId(followedId, pageNumber, pageSize, sortBy, direction);
+	}
 }

@@ -1,5 +1,7 @@
 package com.donikrizky.kicau.itemservice.controller;
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,7 @@ public class ItemController extends CommonResource {
 //			@ApiResponse(code = 401, message = "Full authentication is required to access this resource"),
 //			@ApiResponse(code = 400, message = "Error: "),
 //			@ApiResponse(code = 404, message = "User not found with id") })
-	@PostMapping(value = "/post")
+	@PostMapping(value = "/reply")
 	public ResponseEntity<ResponseBody> replyItem(@RequestBody ItemPostRequestDTO requestDTO,
 			HttpServletRequest request) {
 		LOGGER.info("User reply another item");
@@ -87,7 +89,26 @@ public class ItemController extends CommonResource {
 		LOGGER.info("User find their item");
 
 		Integer userId = 1;
-		Page<ItemResponseDTO> responseDTO = itemService.findByUserId(userId, pageNumber, pageSize, sortBy, direction);
+		Page<ItemResponseDTO> responseDTO = itemService.findByUserId(Arrays.asList(userId), pageNumber, pageSize,
+				sortBy, direction);
+		return ResponseEntity.ok(getResponseBody(HttpStatus.OK.value(), responseDTO, request.getRequestURI()));
+
+	}
+
+	@ApiOperation(value = "Find your timeline items", response = ResponseEntity.class)
+//	@ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "Bearer <access_token>")
+//	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully post item"),
+//			@ApiResponse(code = 401, message = "Full authentication is required to access this resource"),
+//			@ApiResponse(code = 400, message = "Error: "),
+//			@ApiResponse(code = 404, message = "User not found with id") })
+	@GetMapping(value = "/find-my-timeline")
+	public ResponseEntity<ResponseBody> findMyTimeline(Integer pageNumber, Integer pageSize, String sortBy,
+			String direction, HttpServletRequest request) {
+		LOGGER.info("User find their timeline items");
+
+		Integer userId = 1;
+		Page<ItemResponseDTO> responseDTO = itemService.findFollowedItem(userId, pageNumber, pageSize, sortBy,
+				direction);
 		return ResponseEntity.ok(getResponseBody(HttpStatus.OK.value(), responseDTO, request.getRequestURI()));
 
 	}
