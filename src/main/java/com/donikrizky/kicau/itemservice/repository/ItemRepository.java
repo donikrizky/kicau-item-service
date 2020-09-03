@@ -15,7 +15,6 @@ import com.donikrizky.kicau.itemservice.entity.Item;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
 
-	@Query("SELECT new com.donikrizky.kicau.itemservice.dto.response.ItemResponseDTO "
-			+ "(i.comment, i.parentItemId) FROM Item i WHERE i.userId IN :userId AND deleted = false")
+	@Query("SELECT new com.donikrizky.kicau.itemservice.dto.response.ItemResponseDTO(i.comment, i.parentItemId) FROM Item i WHERE i.userId IN (:userId) AND deleted = false")
 	public Page<ItemResponseDTO> findItemByUserId(@Param("userId") List<Integer> userId, Pageable paging);
 }

@@ -1,18 +1,19 @@
 package com.donikrizky.kicau.itemservice.controller;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.donikrizky.kicau.itemservice.common.CommonResource;
@@ -23,6 +24,7 @@ import com.donikrizky.kicau.itemservice.service.ItemService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Api(value = "Item Management System")
 @RestController
@@ -32,6 +34,7 @@ public class ItemController extends CommonResource {
 	@Autowired
 	private Environment env;
 
+	@Autowired
 	private ItemService itemService;
 
 	@ApiOperation(value = "Hello", response = ResponseEntity.class)
@@ -84,12 +87,15 @@ public class ItemController extends CommonResource {
 //			@ApiResponse(code = 400, message = "Error: "),
 //			@ApiResponse(code = 404, message = "User not found with id") })
 	@GetMapping(value = "/find-my-items")
-	public ResponseEntity<ResponseBody> findMyItems(Integer pageNumber, Integer pageSize, String sortBy,
-			String direction, HttpServletRequest request) {
+	public ResponseEntity<ResponseBody> findMyItems(@RequestParam(defaultValue = "0") Integer pageNumber,
+			@RequestParam(defaultValue = "10") Integer pageSize,
+			@RequestParam(defaultValue = "createdDate") String sortBy,
+			@ApiParam(value = "input ASC or DESC") @RequestParam(defaultValue = "DESC") String direction,
+			HttpServletRequest request) {
 		LOGGER.info("User find their item");
 
 		Integer userId = 1;
-		Page<ItemResponseDTO> responseDTO = itemService.findByUserId(Arrays.asList(userId), pageNumber, pageSize,
+		List<ItemResponseDTO> responseDTO = itemService.findByUserId(Arrays.asList(userId), pageNumber, pageSize,
 				sortBy, direction);
 		return ResponseEntity.ok(getResponseBody(HttpStatus.OK.value(), responseDTO, request.getRequestURI()));
 
@@ -102,12 +108,15 @@ public class ItemController extends CommonResource {
 //			@ApiResponse(code = 400, message = "Error: "),
 //			@ApiResponse(code = 404, message = "User not found with id") })
 	@GetMapping(value = "/find-my-timeline")
-	public ResponseEntity<ResponseBody> findMyTimeline(Integer pageNumber, Integer pageSize, String sortBy,
-			String direction, HttpServletRequest request) {
+	public ResponseEntity<ResponseBody> findMyTimeline(@RequestParam(defaultValue = "0") Integer pageNumber,
+			@RequestParam(defaultValue = "10") Integer pageSize,
+			@RequestParam(defaultValue = "createdDate") String sortBy,
+			@ApiParam(value = "input ASC or DESC") @RequestParam(defaultValue = "DESC") String direction,
+			HttpServletRequest request) {
 		LOGGER.info("User find their timeline items");
 
 		Integer userId = 1;
-		Page<ItemResponseDTO> responseDTO = itemService.findFollowedItem(userId, pageNumber, pageSize, sortBy,
+		List<ItemResponseDTO> responseDTO = itemService.findFollowedItem(userId, pageNumber, pageSize, sortBy,
 				direction);
 		return ResponseEntity.ok(getResponseBody(HttpStatus.OK.value(), responseDTO, request.getRequestURI()));
 

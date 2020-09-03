@@ -1,10 +1,10 @@
 package com.donikrizky.kicau.itemservice.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,6 +28,7 @@ public class ItemServiceImpl implements ItemService {
 	ItemServiceImpl(ItemRepository itemRepository, UserFeignClient userFeignClient) {
 		this.itemRepository = itemRepository;
 		this.userFeignClient = userFeignClient;
+		this.addDummyItem();
 	}
 
 	private static final String ERROR_SORT_DIRECTION = "Error: Can only input ASC or DESC for direction!";
@@ -50,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public Page<ItemResponseDTO> findByUserId(List<Integer> userId, Integer pageNumber, Integer pageSize, String sortBy,
+	public List<ItemResponseDTO> findByUserId(List<Integer> userId, Integer pageNumber, Integer pageSize, String sortBy,
 			String direction) {
 		if (!sortByCreatedDate.test(sortBy)) {
 			throw new BadRequestException(ERROR_SORTBY);
@@ -67,15 +68,37 @@ public class ItemServiceImpl implements ItemService {
 			throw new BadRequestException(ERROR_SORT_DIRECTION);
 		}
 
-		return itemRepository.findItemByUserId(userId, paging);
+		return itemRepository.findItemByUserId(userId, paging).toList();
 	}
 
 	@Override
-	public Page<ItemResponseDTO> findFollowedItem(Integer userId, Integer pageNumber, Integer pageSize, String sortBy,
+	public List<ItemResponseDTO> findFollowedItem(Integer userId, Integer pageNumber, Integer pageSize, String sortBy,
 			String direction) {
-		List<Integer> followedId = userFeignClient.findFollowed(userId)
-				.orElseThrow(() -> new BadRequestException("Error: You haven't followed anyone"));
-		
+		List<Integer> followedId = userFeignClient.findFollowed(userId);
+
 		return this.findByUserId(followedId, pageNumber, pageSize, sortBy, direction);
+	}
+
+	private void addDummyItem() {
+		List<Item> items = new ArrayList<Item>();
+		// userId 2
+		items.add(Item.builder().comment("Hari Senin cerah sekali").userId(2).build());
+		items.add(Item.builder().comment("Hari Selasa sedikit mendung").userId(2).build());
+		items.add(Item.builder().comment("Hari Rabu hujan").userId(2).build());
+		items.add(Item.builder().comment("Hari Kamis banjir").userId(2).build());
+		items.add(Item.builder().comment("Hari Jumat longsor dimana mana").userId(2).build());
+
+		// userId 3
+		items.add(Item.builder().comment("Aku pengen makan ayam").userId(3).build());
+		items.add(Item.builder().comment("Aku sudah makan ayam").userId(3).build());
+		items.add(Item.builder().comment("Ayamnya jatuh").userId(3).build());
+		items.add(Item.builder().comment("Ayamnya keinjek").userId(3).build());
+		items.add(Item.builder().comment("Aku sudah tidak punya ayam").userId(3).build());
+		
+		items.add(Item.builder().comment("Ih wow").userId(1).build());
+		items.add(Item.builder().comment("jangan sakit").userId(1).build());
+		items.add(Item.builder().comment("punggul gatel").userId(1).build());
+		
+		itemRepository.saveAll(items);
 	}
 }

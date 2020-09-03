@@ -31,11 +31,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "profile")
+@Table(name = "item")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = { "createdBy", "createdDate", "lastModifiedBy", "lastmodifiedDate" }, allowGetters = true)
-@ApiModel(description = "All details about Profile. ")
-@SQLDelete(sql = "UPDATE profile SET deleted = true WHERE id = ?", check = ResultCheckStyle.COUNT)
+@ApiModel(description = "All details about Item. ")
+@SQLDelete(sql = "UPDATE item SET deleted = true WHERE id = ?", check = ResultCheckStyle.COUNT)
 @Where(clause = "deleted = false")
 public class Item extends Auditable<String> {
 	@Id
